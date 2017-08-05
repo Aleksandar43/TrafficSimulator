@@ -11,6 +11,7 @@ import javafx.scene.shape.TriangleMesh;
 public class Pyramid extends MeshView{
     private float[] points, texCoords={0, 0, 1, 1};
     private int[] baseTriangles, lateralTriangles;
+    private TriangleMesh mesh;
     
     /**
      * Basic constructor
@@ -20,7 +21,7 @@ public class Pyramid extends MeshView{
      * @param withBase whether the base should be drawn
      */
     public Pyramid(float radius, float height, int basePoints, boolean withBase){
-        TriangleMesh mesh=new TriangleMesh();
+        mesh=new TriangleMesh();
         if(basePoints<3) basePoints=3;
         points=new float[basePoints*3+3];
         for(int i=0;i<basePoints;i++){
@@ -88,5 +89,17 @@ public class Pyramid extends MeshView{
      */
     public Pyramid(){
         this(10, 10, 4, true);
+    }
+    
+    /**
+     * Method for setting whether the base should be drawn so it can be changed dynamically.
+     * @param drawBase true if base should be drawn
+     */
+    public void setDrawBase(boolean drawBase){
+        if(drawBase){
+            mesh.getFaces().setAll(lateralTriangles);
+            mesh.getFaces().addAll(baseTriangles);
+        }
+        else mesh.getFaces().setAll(lateralTriangles);
     }
 }
