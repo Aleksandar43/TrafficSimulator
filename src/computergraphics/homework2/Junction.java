@@ -9,7 +9,7 @@ public class Junction extends Box{
     public Junction(){
         super(500, 500, 1);
         PhongMaterial mat=new PhongMaterial();
-        mat.setDiffuseMap(new Image("computergraphics/homework2/images/road.png"));
+        mat.setDiffuseMap(new Image("computergraphics/homework2/images/junction.png"));
         setMaterial(mat);
     }
 }
