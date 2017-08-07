@@ -20,7 +20,8 @@ public class Main extends Application{
     private PerspectiveCamera previewCamera,mainCamera,junctionCamera;
     private Translate translateMainCamera,translateJunctionCamera;
     private Rotate xRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
-    private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=50;
+    private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=50,
+            xRotateStartingAngle=180,xRotateMinAngle=180,xRotateMaxAngle=270;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -53,7 +54,7 @@ public class Main extends Application{
         previewCamera.setFarClip(10000);
         mainCamera=new PerspectiveCamera(true);
         mainCamera.setFarClip(10000);
-        xRotateMainCamera = new Rotate(180, Rotate.X_AXIS);
+        xRotateMainCamera = new Rotate(xRotateStartingAngle, Rotate.X_AXIS);
         translateMainCamera = new Translate(0, 0, -1000);
         mainCamera.getTransforms().addAll(xRotateMainCamera, translateMainCamera);
         Rotate rot1=new Rotate(-135, Rotate.X_AXIS);
@@ -63,7 +64,7 @@ public class Main extends Application{
         junctionCamera=new PerspectiveCamera(true);
         junctionCamera.setFarClip(10000);
         translateJunctionCamera=new Translate(0, 0, 50);
-        xRotateJunctionCamera=new Rotate(180, xPivotJunctionCamera, yPivotJunctionCamera, zPivotJunctionCamera, Rotate.X_AXIS);
+        xRotateJunctionCamera=new Rotate(xRotateStartingAngle, xPivotJunctionCamera, yPivotJunctionCamera, zPivotJunctionCamera, Rotate.X_AXIS);
         yRotateJunctionCamera=new Rotate(0, xPivotJunctionCamera, yPivotJunctionCamera, zPivotJunctionCamera, Rotate.Y_AXIS);
         zRotateJunctionCamera=new Rotate(0, xPivotJunctionCamera, yPivotJunctionCamera, zPivotJunctionCamera, Rotate.Z_AXIS);
         junctionCamera.getTransforms().addAll(translateJunctionCamera, zRotateJunctionCamera, yRotateJunctionCamera, xRotateJunctionCamera);
@@ -78,7 +79,7 @@ public class Main extends Application{
         primaryStage.show();
     }
     
-    public void keyPressing(KeyEvent e){
+    private void keyPressing(KeyEvent e){
         switch(e.getCode()){
             case DIGIT1:
                 scene.setCamera(mainCamera);
@@ -96,7 +97,7 @@ public class Main extends Application{
         }
     }
     
-    public void keyPressingMainCamera(KeyEvent e){
+    private void keyPressingMainCamera(KeyEvent e){
         switch(e.getCode()){
             case UP:
                 translateMainCamera.setZ(translateMainCamera.getZ()+10);
@@ -107,13 +108,15 @@ public class Main extends Application{
         }
     }
     
-    public void keyPressingJunctionCamera(KeyEvent e){
+    private void keyPressingJunctionCamera(KeyEvent e){
         switch(e.getCode()){
             case UP:
-                xRotateJunctionCamera.setAngle(xRotateJunctionCamera.getAngle()+1);
+                if(xRotateJunctionCamera.getAngle()<xRotateMaxAngle)
+                    xRotateJunctionCamera.setAngle(xRotateJunctionCamera.getAngle()+1);
                 break;
             case DOWN:
-                xRotateJunctionCamera.setAngle(xRotateJunctionCamera.getAngle()-1);
+                if(xRotateJunctionCamera.getAngle()>xRotateMinAngle)
+                    xRotateJunctionCamera.setAngle(xRotateJunctionCamera.getAngle()-1);
                 break;
             case LEFT:
                 zRotateJunctionCamera.setAngle(zRotateJunctionCamera.getAngle()+1);
@@ -121,6 +124,9 @@ public class Main extends Application{
             case RIGHT:
                 zRotateJunctionCamera.setAngle(zRotateJunctionCamera.getAngle()-1);
                 break;
+            case X:
+                System.out.println("junctionCamera: "+xRotateJunctionCamera.getAngle()+", "+
+                        yRotateJunctionCamera.getAngle()+", "+zRotateJunctionCamera.getAngle());
         }
     }
     
