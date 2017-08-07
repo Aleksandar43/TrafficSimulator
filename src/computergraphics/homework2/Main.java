@@ -21,7 +21,7 @@ public class Main extends Application{
     private Translate translateMainCamera,translateJunctionCamera;
     private Rotate xRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
     private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=50,
-            xRotateStartingAngle=180,xRotateMinAngle=180,xRotateMaxAngle=270;
+            xRotateStartingAngle=225,xRotateMinAngle=180,xRotateMaxAngle=270;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
