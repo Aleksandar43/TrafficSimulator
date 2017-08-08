@@ -11,6 +11,7 @@ import javafx.scene.transform.Translate;
 public class Junction extends Group{
     private Box junction;
     private StopBox[] stopBoxes=new StopBox[4];
+    private boolean stopBoxesVisible=true;
     public Junction(){
         junction=new Box(500, 500, 1);
         PhongMaterial mat=new PhongMaterial();
@@ -22,8 +23,12 @@ public class Junction extends Group{
             stopBoxes[i].getTransforms().addAll(new Rotate(i*90, Rotate.Z_AXIS),new Translate(100, 250+200/2, 100));
             getChildren().add(stopBoxes[i]);
         }
-        /*StopBox stopBox=new StopBox(50, 50, 50);
-        stopBox.getTransforms().addAll(new Rotate(45, Rotate.Z_AXIS),new Translate(200, 600, 0));
-        getChildren().add(stopBox);*/
+    }
+    
+    public void toggleStopBoxVisibility(){
+        stopBoxesVisible=!stopBoxesVisible;
+        for(StopBox sb:stopBoxes){
+            sb.setVisible(stopBoxesVisible);
+        }
     }
 }

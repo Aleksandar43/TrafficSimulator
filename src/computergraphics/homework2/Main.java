@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application{
     private Scene scene;
+    private Junction junction;
     private PerspectiveCamera previewCamera,mainCamera,junctionCamera;
     private Translate translateMainCamera,translateJunctionCamera;
     private Rotate xRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
@@ -35,7 +36,7 @@ public class Main extends Application{
         pyramid.setTranslateX(100);
         Group mainGroup=new Group();
         mainGroup.getChildren().addAll(field, pyramid);
-        Junction junction=new Junction();
+        junction = new Junction();
         mainGroup.getChildren().add(junction);
         for(int i=0;i<5;i++){
             Road r=new Road();
@@ -54,7 +55,7 @@ public class Main extends Application{
         previewCamera.setFarClip(10000);
         mainCamera=new PerspectiveCamera(true);
         mainCamera.setFarClip(10000);
-        xRotateMainCamera = new Rotate(xRotateStartingAngle, Rotate.X_AXIS);
+        xRotateMainCamera = new Rotate(180, Rotate.X_AXIS);
         translateMainCamera = new Translate(0, 0, -1000);
         mainCamera.getTransforms().addAll(xRotateMainCamera, translateMainCamera);
         Rotate rot1=new Rotate(-135, Rotate.X_AXIS);
@@ -89,6 +90,9 @@ public class Main extends Application{
                 break;
             case P:
                 scene.setCamera(previewCamera);
+                break;
+            case V:
+                junction.toggleStopBoxVisibility();
                 break;
             default:
                 Camera currentCamera = scene.getCamera();
