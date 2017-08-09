@@ -34,7 +34,7 @@ public class Main extends Application{
             StopBox[] stopBoxes = junction.getLocalStopBoxes();
             boolean intersecting=false; 
             for (StopBox stopBox : stopBoxes) {
-                if(dummy.getBoundsInParent().intersects(stopBox.getBoundsInParent())){
+                if(stopBox.isActive() && dummy.getBoundsInParent().intersects(stopBox.getBoundsInParent())){
                     intersecting=true;
                     break;
                 }
@@ -131,6 +131,9 @@ public class Main extends Application{
                 break;
             case V:
                 StopBox.toggleStopBoxVisibility();
+                break;
+            case A:
+                junction.toggleActiveStopBoxes();
                 break;
             default:
                 Camera currentCamera = scene.getCamera();
