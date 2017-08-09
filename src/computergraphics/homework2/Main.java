@@ -1,6 +1,7 @@
 package computergraphics.homework2;
 
 import computergraphics.homework2.shapes.Pyramid;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Camera;
 import javafx.scene.Group;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -21,8 +23,33 @@ public class Main extends Application{
     private PerspectiveCamera previewCamera,mainCamera,junctionCamera;
     private Translate translateMainCamera,translateJunctionCamera;
     private Rotate xRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
-    private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=50,
+    private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=150,
             xRotateStartingAngle=225,xRotateMinAngle=180,xRotateMaxAngle=270;
+    
+    private class TrafficTimer extends AnimationTimer{
+
+        @Override
+        public void handle(long now) {
+            translateDummy.setX(translateDummy.getX()+dummySpeed);
+            StopBox[] stopBoxes = junction.getLocalStopBoxes();
+            boolean intersecting=false; 
+            for (StopBox stopBox : stopBoxes) {
+                if(dummy.getBoundsInParent().intersects(stopBox.getBoundsInParent())){
+                    intersecting=true;
+                    break;
+                }
+            }
+            if(intersecting){
+                if(dummySpeed>=0.1) dummySpeed=dummySpeed-0.1;
+            }
+            else{
+                if(dummySpeed<=0.9) dummySpeed=dummySpeed+0.1;
+            }
+        }
+        
+    }
+    
+    private TrafficTimer trafficTimer=new TrafficTimer();
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -72,13 +99,24 @@ public class Main extends Application{
         PointLight pointLight=new PointLight();
         pointLight.setTranslateX(75);
         //mainGroup.getChildren().add(pointLight);
+        //dummy vehicle box
+        dummy = new Box(50, 50, 50);
+        PhongMaterial materialDummy=new PhongMaterial(Color.BROWN);
+        dummy.setMaterial(materialDummy);
+        translateDummy = new Translate(0, 0, 0);
+        dummy.getTransforms().add(translateDummy);
+        mainGroup.getChildren().add(dummy);
         scene = new Scene(mainGroup, 640, 480, true);
         scene.setCamera(mainCamera);
         scene.setOnKeyPressed(e->keyPressing(e));
         primaryStage.setScene(scene);
         primaryStage.setTitle("Traffic Simulator");
         primaryStage.show();
+        trafficTimer.start();
     }
+    private Translate translateDummy;
+    private Box dummy;
+    private double dummySpeed=1;
     
     private void keyPressing(KeyEvent e){
         switch(e.getCode()){
@@ -92,7 +130,7 @@ public class Main extends Application{
                 scene.setCamera(previewCamera);
                 break;
             case V:
-                junction.toggleStopBoxVisibility();
+                StopBox.toggleStopBoxVisibility();
                 break;
             default:
                 Camera currentCamera = scene.getCamera();
@@ -131,6 +169,7 @@ public class Main extends Application{
             case X:
                 System.out.println("junctionCamera: "+xRotateJunctionCamera.getAngle()+", "+
                         yRotateJunctionCamera.getAngle()+", "+zRotateJunctionCamera.getAngle());
+                break;
         }
     }
     
