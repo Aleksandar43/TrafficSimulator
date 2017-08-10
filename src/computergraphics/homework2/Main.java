@@ -175,6 +175,11 @@ public class Main extends Application{
                 break;
         }
     }
+
+    @Override
+    public void stop() throws Exception {
+        //
+    }
     
     public static void main(String[] args){
         launch(args);

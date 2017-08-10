@@ -20,14 +20,14 @@ public class Junction extends Group{
         }
         @Override
         public void run() {
-            try {
-                while (true) {                    
+            while (!Thread.interrupted()) {                
+                try {                    
                     Thread.sleep(milisGreenHorizontally);
                     toggleActiveStopBoxes();
                     Thread.sleep(milisGreenVertically);
                     toggleActiveStopBoxes();
-                }
-            } catch (InterruptedException ex) {/*just leave*/}
+                } catch (InterruptedException ex) {/*just leave*/}
+            }
         }
     }
     
@@ -50,7 +50,8 @@ public class Junction extends Group{
         }
         junctionRunnable=new JunctionRunnable(milisGreenHorizontally, milisGreenVertically);
         lightsThread = new Thread(junctionRunnable);
-        //lightsThread.start();
+        lightsThread.setDaemon(true);
+        //lightsThread.start(); - overridable method call, watch out
         startWorking();
     }
 
@@ -62,7 +63,11 @@ public class Junction extends Group{
         for(StopBox sb:localStopBoxes) sb.setActive(!sb.isActive());
     }
     
-    private void startWorking(){
+    public void startWorking(){
         lightsThread.start();
+    }
+    
+    public void stopWorking(){
+        lightsThread.interrupt();
     }
 }
