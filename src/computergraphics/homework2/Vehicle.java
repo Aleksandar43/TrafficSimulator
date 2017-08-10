@@ -9,6 +9,8 @@ import javafx.scene.Group;
  */
 public abstract class Vehicle extends Group{
     protected Point3D checkingPoint=new Point3D(0, 0, 0);
-    /**Method to be called when the vehicle should calculate its new position.*/
-    public abstract void updatePosition();
+    /**Method to be called when the vehicle should calculate its new position
+     * @param nanosecondsPassed nanoseconds passed since last update*/
+    //check if it is in a stop box or not, then either slow down or speed up
+    public abstract void updatePosition(long nanosecondsPassed);
 }

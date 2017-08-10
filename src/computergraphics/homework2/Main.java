@@ -63,7 +63,7 @@ public class Main extends Application{
         pyramid.setTranslateX(100);
         Group mainGroup=new Group();
         mainGroup.getChildren().addAll(field, pyramid);
-        junction = new Junction();
+        junction = new Junction(3000, 3000);
         mainGroup.getChildren().add(junction);
         for(int i=0;i<5;i++){
             Road r=new Road();

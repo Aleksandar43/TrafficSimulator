@@ -51,6 +51,10 @@ public class StopBox extends Box{
         return active;
     }
 
+    /**
+     * Sets this StopBox to be active or not. Inactive StopBox does not slow down vehicle passing through it.
+     * @param active makes StopBox active or not
+     */
     public void setActive(boolean active) {
         this.active = active;
         if(active) setMaterial(activeMaterial);
