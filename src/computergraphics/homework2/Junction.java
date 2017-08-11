@@ -43,7 +43,7 @@ public class Junction extends Group{
         getChildren().add(junction);
         for(int i=0;i<localStopBoxes.length;i++){
             localStopBoxes[i]=StopBox.createStopBox(200, 200, 200);
-            localStopBoxes[i].getTransforms().addAll(new Rotate(i*90, Rotate.Z_AXIS),new Translate(100, 250+200/2, 100));
+            localStopBoxes[i].getTransforms().addAll(new Rotate(i*90, Rotate.Z_AXIS),new Translate(-100, 250+200/2, 100));
             if(i%2==0) localStopBoxes[i].setActive(true);
             else localStopBoxes[i].setActive(false);
             getChildren().add(localStopBoxes[i]);

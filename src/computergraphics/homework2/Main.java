@@ -22,7 +22,7 @@ public class Main extends Application{
     private Junction junction;
     private PerspectiveCamera previewCamera,mainCamera,junctionCamera;
     private Translate translateMainCamera,translateJunctionCamera;
-    private Rotate xRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
+    private Rotate xRotateMainCamera,zRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
     private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=150,
             xRotateStartingAngle=225,xRotateMinAngle=180,xRotateMaxAngle=270;
     
@@ -30,6 +30,8 @@ public class Main extends Application{
 
         @Override
         public void handle(long now) {
+            Translate environmentTranslate = truck.getEnvironmentTranslate();
+            environmentTranslate.setX(environmentTranslate.getX()+1);
             translateDummy.setX(translateDummy.getX()+dummySpeed);
             StopBox[] stopBoxes = junction.getLocalStopBoxes();
             boolean intersecting=false; 
@@ -40,10 +42,10 @@ public class Main extends Application{
                 }
             }
             if(intersecting){
-                if(dummySpeed>=0.1) dummySpeed=dummySpeed-0.1;
+                if(dummySpeed>0) dummySpeed=dummySpeed-0.5;
             }
             else{
-                if(dummySpeed<=0.9) dummySpeed=dummySpeed+0.1;
+                if(dummySpeed<15) dummySpeed=dummySpeed+0.5;
             }
         }
         
@@ -82,9 +84,10 @@ public class Main extends Application{
         previewCamera.setFarClip(10000);
         mainCamera=new PerspectiveCamera(true);
         mainCamera.setFarClip(10000);
-        xRotateMainCamera = new Rotate(180, Rotate.X_AXIS);
-        translateMainCamera = new Translate(0, 0, -1000);
-        mainCamera.getTransforms().addAll(xRotateMainCamera, translateMainCamera);
+        xRotateMainCamera=new Rotate(180, Rotate.X_AXIS);
+        zRotateMainCamera=new Rotate(180, Rotate.Z_AXIS);
+        translateMainCamera=new Translate(0, 0, -3000);
+        mainCamera.getTransforms().addAll(xRotateMainCamera, zRotateMainCamera, translateMainCamera);
         Rotate rot1=new Rotate(-135, Rotate.X_AXIS);
         Rotate rot2=new Rotate(0, Rotate.Y_AXIS);
         Translate t1=new Translate(0, 0, -2000);
@@ -100,12 +103,21 @@ public class Main extends Application{
         pointLight.setTranslateX(75);
         //mainGroup.getChildren().add(pointLight);
         //dummy vehicle box
-        dummy = new Box(50, 50, 50);
+        dummy = new Box(350, 150, 150);
         PhongMaterial materialDummy=new PhongMaterial(Color.BROWN);
         dummy.setMaterial(materialDummy);
-        translateDummy = new Translate(0, 0, 0);
+        translateDummy = new Translate(-3000, -87.5, 75);
         dummy.getTransforms().add(translateDummy);
         mainGroup.getChildren().add(dummy);
+        //testing vehicle
+        truck = new Truck();
+        truck.moveToPoint(0, -75, 0);
+        //truck.rotate(90);
+        mainGroup.getChildren().add(truck);
+//        truck2 = new Truck();
+//        truck2.moveToPoint(100, 100, 0);
+//        //truck2.rotate(45);
+//        mainGroup.getChildren().add(truck2);
         scene = new Scene(mainGroup, 640, 480, true);
         scene.setCamera(mainCamera);
         scene.setOnKeyPressed(e->keyPressing(e));
@@ -114,9 +126,10 @@ public class Main extends Application{
         primaryStage.show();
         trafficTimer.start();
     }
+    private Truck truck,truck2;
     private Translate translateDummy;
     private Box dummy;
-    private double dummySpeed=1;
+    private double dummySpeed=15;
     
     private void keyPressing(KeyEvent e){
         switch(e.getCode()){
@@ -135,6 +148,8 @@ public class Main extends Application{
             case A:
                 junction.toggleActiveStopBoxes();
                 break;
+            case T:
+                scene.setCamera(truck.vehicleCamera);
             default:
                 Camera currentCamera = scene.getCamera();
                 if(currentCamera.equals(mainCamera)) keyPressingMainCamera(e);
