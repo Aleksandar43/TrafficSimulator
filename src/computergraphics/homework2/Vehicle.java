@@ -18,7 +18,7 @@ public abstract class Vehicle extends Group{
     protected Translate cameraDistance,environmentTranslate;
     protected Rotate cameraAngleX,cameraAngleZ,environmentRotate;
     //in meters/second and meters/second^2
-    protected double maxSpeed, acceleratingRate, brakingRate, currentSpeed=maxSpeed;
+    protected double maxSpeed, acceleratingRate, brakingRate, currentSpeed;
     
     public Vehicle(double maxSpeed, double acceleratingRate, double brakingRate, double x, double y, double z) {
         checkingPoint=new Point3D(x, y, z);
@@ -32,6 +32,7 @@ public abstract class Vehicle extends Group{
         this.maxSpeed=maxSpeed;
         this.acceleratingRate=acceleratingRate;
         this.brakingRate=brakingRate;
+        currentSpeed=maxSpeed;
         environmentTranslate=new Translate();
         environmentRotate=new Rotate(0, Rotate.Z_AXIS);
         getTransforms().addAll(environmentRotate,environmentTranslate);
@@ -68,6 +69,6 @@ public abstract class Vehicle extends Group{
     //check if it is in a stop box or not, then either slow down or speed up
     public void updatePosition(long nanosecondsPassed){
         double seconds=nanosecondsPassed/1e9;
-        
+        environmentTranslate.setX(environmentTranslate.getX()+currentSpeed*100*seconds);
     }
 }

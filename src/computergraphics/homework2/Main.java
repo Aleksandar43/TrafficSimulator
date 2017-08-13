@@ -27,11 +27,11 @@ public class Main extends Application{
             xRotateStartingAngle=225,xRotateMinAngle=180,xRotateMaxAngle=270;
     
     private class TrafficTimer extends AnimationTimer{
-
+        private long previous=0;
         @Override
         public void handle(long now) {
-            Translate environmentTranslate = truck.getEnvironmentTranslate();
-            environmentTranslate.setX(environmentTranslate.getX()+1);
+            if(previous==0) previous=now;
+            truck.updatePosition(now-previous);
             translateDummy.setX(translateDummy.getX()+dummySpeed);
             StopBox[] stopBoxes = junction.getLocalStopBoxes();
             boolean intersecting=false; 
@@ -47,8 +47,8 @@ public class Main extends Application{
             else{
                 if(dummySpeed<15) dummySpeed=dummySpeed+0.5;
             }
+            previous=now;
         }
-        
     }
     
     private TrafficTimer trafficTimer=new TrafficTimer();
@@ -111,8 +111,8 @@ public class Main extends Application{
         mainGroup.getChildren().add(dummy);
         //testing vehicle
         truck = new Truck();
-        truck.moveToPoint(0, -75, 0);
-        //truck.rotate(90);
+        truck.moveToPoint(-5000, -75, 0);
+        truck.rotate(90);
         mainGroup.getChildren().add(truck);
 //        truck2 = new Truck();
 //        truck2.moveToPoint(100, 100, 0);
