@@ -32,6 +32,7 @@ public class Main extends Application{
         public void handle(long now) {
             if(previous==0) previous=now;
             truck.updatePosition(now-previous);
+            truck2.updatePosition(now-previous);
             translateDummy.setX(translateDummy.getX()+dummySpeed);
             StopBox[] stopBoxes = junction.getLocalStopBoxes();
             boolean intersecting=false; 
@@ -65,7 +66,7 @@ public class Main extends Application{
         pyramid.setTranslateX(100);
         Group mainGroup=new Group();
         mainGroup.getChildren().addAll(field, pyramid);
-        junction = new Junction(3000, 3000);
+        junction = new Junction(5000, 5000);
         mainGroup.getChildren().add(junction);
         for(int i=0;i<5;i++){
             Road r=new Road();
@@ -83,10 +84,10 @@ public class Main extends Application{
         previewCamera.setNearClip(0.1);
         previewCamera.setFarClip(10000);
         mainCamera=new PerspectiveCamera(true);
-        mainCamera.setFarClip(10000);
+        mainCamera.setFarClip(20000);
         xRotateMainCamera=new Rotate(180, Rotate.X_AXIS);
         zRotateMainCamera=new Rotate(180, Rotate.Z_AXIS);
-        translateMainCamera=new Translate(0, 0, -3000);
+        translateMainCamera=new Translate(0, 0, -10000);
         mainCamera.getTransforms().addAll(xRotateMainCamera, zRotateMainCamera, translateMainCamera);
         Rotate rot1=new Rotate(-135, Rotate.X_AXIS);
         Rotate rot2=new Rotate(0, Rotate.Y_AXIS);
@@ -111,13 +112,13 @@ public class Main extends Application{
         mainGroup.getChildren().add(dummy);
         //testing vehicle
         truck = new Truck();
-        truck.moveToPoint(-5000, -75, 0);
+        truck.moveToPoint(-2000, -75, 0);
         truck.rotate(90);
         mainGroup.getChildren().add(truck);
-//        truck2 = new Truck();
-//        truck2.moveToPoint(100, 100, 0);
-//        //truck2.rotate(45);
-//        mainGroup.getChildren().add(truck2);
+        truck2 = new Truck();
+        truck2.moveToPoint(-4000, -75, 0);
+        truck2.rotate(90);
+        mainGroup.getChildren().add(truck2);
         scene = new Scene(mainGroup, 640, 480, true);
         scene.setCamera(mainCamera);
         scene.setOnKeyPressed(e->keyPressing(e));

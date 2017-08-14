@@ -1,6 +1,7 @@
 /* */
 package computergraphics.homework2;
 
+import java.util.ArrayList;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -22,7 +23,7 @@ public abstract class Vehicle extends Group{
     
     public Vehicle(double maxSpeed, double acceleratingRate, double brakingRate, double x, double y, double z) {
         checkingPoint=new Point3D(x, y, z);
-        cameraDistance=new Translate(0, 0, -800);
+        cameraDistance=new Translate(0, 0, -1000);
         cameraAngleX=new Rotate(-135, Rotate.X_AXIS);
         cameraAngleZ=new Rotate(-90, Rotate.Z_AXIS);
         vehicleCamera=new PerspectiveCamera(true);
@@ -69,6 +70,22 @@ public abstract class Vehicle extends Group{
     //check if it is in a stop box or not, then either slow down or speed up
     public void updatePosition(long nanosecondsPassed){
         double seconds=nanosecondsPassed/1e9;
+        //1 unit represents 1cm
         environmentTranslate.setX(environmentTranslate.getX()+currentSpeed*100*seconds);
+        ArrayList<StopBox> stopBoxes = StopBox.getStopBoxes();
+        boolean intersecting=false; 
+        for (StopBox sb : stopBoxes) {
+            if(sb.isActive() && sb.getBoundsInParent().contains(localToParent(checkingPoint))){
+                intersecting=true;
+                break;
+            }
+        }
+        if(intersecting){
+                currentSpeed=currentSpeed-brakingRate*seconds;
+                if(currentSpeed<0) currentSpeed=0;
+        } else{
+                currentSpeed=currentSpeed+acceleratingRate*seconds;
+                if(currentSpeed>maxSpeed) currentSpeed=maxSpeed;
+        }
     }
 }
