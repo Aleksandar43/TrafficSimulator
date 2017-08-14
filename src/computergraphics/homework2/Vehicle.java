@@ -65,6 +65,9 @@ public abstract class Vehicle extends Group{
         environmentRotate.setAngle(environmentRotate.getAngle()+angle);
     }
 
+    public void rotateVehicleCamera(double angle){
+        cameraAngleX.setAngle(cameraAngleX.getAngle()+angle);
+    }
     /**Method to be called when the vehicle should calculate its new position
      * @param nanosecondsPassed nanoseconds passed since last update*/
     //check if it is in a stop box or not, then either slow down or speed up

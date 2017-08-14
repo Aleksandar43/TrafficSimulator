@@ -57,16 +57,22 @@ public class Main extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
         int FIELD_LENGTH=1000;
-        Rectangle field=new Rectangle(FIELD_LENGTH, FIELD_LENGTH, Color.GREEN);
-        field.setTranslateX(-FIELD_LENGTH/2);
-        field.setTranslateY(-FIELD_LENGTH/2);
+//        Rectangle field=new Rectangle(FIELD_LENGTH, FIELD_LENGTH, Color.GREEN);
+//        field.setTranslateX(-FIELD_LENGTH/2);
+//        field.setTranslateY(-FIELD_LENGTH/2);
+        Box grass=new Box(FIELD_LENGTH, FIELD_LENGTH, 10);
+        grass.setTranslateZ(-10);
+        PhongMaterial grassMaterial=new PhongMaterial(Color.GREEN);
+        grass.setMaterial(grassMaterial);
         Pyramid pyramid=new Pyramid(50, 50);
         PhongMaterial pyramidMaterial=new PhongMaterial(Color.YELLOW);
         pyramid.setMaterial(pyramidMaterial);
         pyramid.setTranslateX(100);
         Group mainGroup=new Group();
-        mainGroup.getChildren().addAll(field, pyramid);
-        junction = new Junction(5000, 5000);
+//        mainGroup.getChildren().add(field);
+        mainGroup.getChildren().add(grass);
+        mainGroup.getChildren().add(pyramid);
+        junction = new Junction(7000, 7000);
         mainGroup.getChildren().add(junction);
         for(int i=0;i<5;i++){
             Road r=new Road();
@@ -151,10 +157,15 @@ public class Main extends Application{
                 break;
             case T:
                 scene.setCamera(truck.vehicleCamera);
+                break;
+            case Y:
+                scene.setCamera(truck2.vehicleCamera);
+                break;
             default:
                 Camera currentCamera = scene.getCamera();
                 if(currentCamera.equals(mainCamera)) keyPressingMainCamera(e);
                 if(currentCamera.equals(junctionCamera)) keyPressingJunctionCamera(e);
+                if(currentCamera.equals(truck.vehicleCamera)||currentCamera.equals(truck2.vehicleCamera)) keyPressingTruckCamera(e);
         }
     }
     
@@ -188,6 +199,17 @@ public class Main extends Application{
             case X:
                 System.out.println("junctionCamera: "+xRotateJunctionCamera.getAngle()+", "+
                         yRotateJunctionCamera.getAngle()+", "+zRotateJunctionCamera.getAngle());
+                break;
+        }
+    }
+    
+    private void keyPressingTruckCamera(KeyEvent e){
+        switch(e.getCode()){
+            case UP:
+                truck.rotateVehicleCamera(-5);
+                break;
+            case DOWN:
+                truck.rotateVehicleCamera(+5);
                 break;
         }
     }
