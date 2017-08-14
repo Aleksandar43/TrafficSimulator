@@ -2,6 +2,7 @@
 package computergraphics.homework2;
 
 import java.util.ArrayList;
+import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -68,5 +69,9 @@ public class StopBox extends Box{
     public static void toggleStopBoxVisibility(){
         visible=!visible;
         for(StopBox sb:stopBoxes) sb.setVisible(visible);
+    }
+    
+    public Bounds getBoundsInScene(){
+        return localToScene(getBoundsInLocal());
     }
 }

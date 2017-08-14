@@ -78,7 +78,7 @@ public abstract class Vehicle extends Group{
         ArrayList<StopBox> stopBoxes = StopBox.getStopBoxes();
         boolean intersecting=false; 
         for (StopBox sb : stopBoxes) {
-            if(sb.isActive() && sb.getBoundsInParent().contains(localToParent(checkingPoint))){
+            if(sb.isActive() && sb.getBoundsInScene().contains(localToScene(checkingPoint))){
                 intersecting=true;
                 break;
             }

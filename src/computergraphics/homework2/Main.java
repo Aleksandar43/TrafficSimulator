@@ -72,7 +72,7 @@ public class Main extends Application{
 //        mainGroup.getChildren().add(field);
         mainGroup.getChildren().add(grass);
         mainGroup.getChildren().add(pyramid);
-        junction = new Junction(7000, 7000);
+        junction = new Junction(7000, 8000);
         mainGroup.getChildren().add(junction);
         for(int i=0;i<5;i++){
             Road r=new Road();
@@ -118,11 +118,11 @@ public class Main extends Application{
         mainGroup.getChildren().add(dummy);
         //testing vehicle
         truck = new Truck();
-        truck.moveToPoint(-2000, -75, 0);
+        truck.moveToPoint(-3000, -75, 0);
         truck.rotate(90);
         mainGroup.getChildren().add(truck);
         truck2 = new Truck();
-        truck2.moveToPoint(-4000, -75, 0);
+        truck2.moveToPoint(-6000, -75, 0);
         truck2.rotate(90);
         mainGroup.getChildren().add(truck2);
         scene = new Scene(mainGroup, 640, 480, true);

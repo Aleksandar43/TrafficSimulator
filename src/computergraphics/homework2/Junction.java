@@ -33,6 +33,7 @@ public class Junction extends Group{
     
     private JunctionRunnable junctionRunnable;
     private Thread lightsThread;
+    private static final double STOPBOX_LENGTH = 2000;
     private Box junction;
     private StopBox[] localStopBoxes=new StopBox[4];
     public Junction(long milisGreenHorizontally, long milisGreenVertically){
@@ -42,9 +43,9 @@ public class Junction extends Group{
         junction.setMaterial(mat);
         getChildren().add(junction);
         for(int i=0;i<localStopBoxes.length;i++){
-            localStopBoxes[i]=StopBox.createStopBox(200, 2000, 200);
-            localStopBoxes[i].getTransforms().addAll(new Rotate(i*90, Rotate.Z_AXIS),new Translate(-100, 250+2000/2, 100));
-            if(i%2==0) localStopBoxes[i].setActive(true);
+            localStopBoxes[i]=StopBox.createStopBox(200, STOPBOX_LENGTH, 200);
+            localStopBoxes[i].getTransforms().addAll(new Rotate(i*90, Rotate.Z_AXIS),new Translate(-100, 250+STOPBOX_LENGTH/2, 100));
+            if(i%2==0) localStopBoxes[i].setActive(true); //!
             else localStopBoxes[i].setActive(false);
             getChildren().add(localStopBoxes[i]);
         }
