@@ -10,6 +10,7 @@ import javafx.scene.transform.Translate;
 
 /**
  * An abstract class which represents vehicle participating in traffic.
+ * <p> All subclasses should call one of {@link #initVehicle(double, double, double, double, double, double) initVehicle} methods in their constructors to be properly initialized.
  */
 public abstract class Vehicle extends Group{
     /**Point used to detect if the vehicle is in braking zone (represented by {@link StopBox}).*/
@@ -20,8 +21,9 @@ public abstract class Vehicle extends Group{
     protected Rotate cameraAngleX,cameraAngleZ,environmentRotate;
     //in meters/second and meters/second^2
     protected double maxSpeed, acceleratingRate, brakingRate, currentSpeed;
+    protected static ArrayList<Vehicle> allVehicles=new ArrayList<>();
     
-    public Vehicle(double maxSpeed, double acceleratingRate, double brakingRate, double x, double y, double z) {
+    protected void initVehicle(double maxSpeed, double acceleratingRate, double brakingRate, double x, double y, double z) {
         checkingPoint=new Point3D(x, y, z);
         cameraDistance=new Translate(0, 0, -1000);
         cameraAngleX=new Rotate(-135, Rotate.X_AXIS);
@@ -37,14 +39,15 @@ public abstract class Vehicle extends Group{
         environmentTranslate=new Translate();
         environmentRotate=new Rotate(0, Rotate.Z_AXIS);
         getTransforms().addAll(environmentRotate,environmentTranslate);
+        allVehicles.add(this);
     }
  
-    public Vehicle() {
-        this(15,15,15,0,0,0);
+    protected void initVehicle() {
+        initVehicle(15,15,15,0,0,0);
     }
     
-    public Vehicle(double x, double y, double z) {
-        this(15,15,15,x,y,z);
+    protected void initVehicle(double x, double y, double z) {
+        initVehicle(15,15,15,x,y,z);
     }
     
     public Translate getEnvironmentTranslate() {
@@ -90,5 +93,9 @@ public abstract class Vehicle extends Group{
                 currentSpeed=currentSpeed+acceleratingRate*seconds;
                 if(currentSpeed>maxSpeed) currentSpeed=maxSpeed;
         }
+    }
+    
+    public static ArrayList getAllVehicles(){
+        return allVehicles;
     }
 }

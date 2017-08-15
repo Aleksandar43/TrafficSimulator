@@ -11,7 +11,7 @@ public class Truck extends Vehicle{
     private PhongMaterial frontBoxMaterial, rearBoxMaterial;
     private StopBox stopBox;
     public Truck(){
-        super(10, 3, 3, 0, -100, 0);
+        super.initVehicle(10, 3, 3, 0, -100, 0);
         frontBox=new Box(100,150,100);
         frontBoxMaterial=new PhongMaterial(Color.LIGHTPINK);
         frontBox.setMaterial(frontBoxMaterial);
