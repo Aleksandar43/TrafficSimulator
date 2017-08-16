@@ -22,6 +22,7 @@ public abstract class Vehicle extends Group{
     //in meters/second and meters/second^2
     protected double maxSpeed, acceleratingRate, brakingRate, currentSpeed;
     protected static ArrayList<Vehicle> allVehicles=new ArrayList<>();
+    protected static double vehicleCameraUpLimit=-180, vehicleCameraDownLimit=-95;
     
     protected void initVehicle(double maxSpeed, double acceleratingRate, double brakingRate, double x, double y, double z) {
         checkingPoint=new Point3D(x, y, z);
@@ -70,6 +71,9 @@ public abstract class Vehicle extends Group{
 
     public void rotateVehicleCamera(double angle){
         cameraAngleX.setAngle(cameraAngleX.getAngle()+angle);
+        System.out.println(cameraAngleX.getAngle());
+        if(cameraAngleX.getAngle()>vehicleCameraDownLimit) cameraAngleX.setAngle(vehicleCameraDownLimit);
+        if(cameraAngleX.getAngle()<vehicleCameraUpLimit) cameraAngleX.setAngle(vehicleCameraUpLimit);
     }
     /**Method to be called when the vehicle should calculate its new position
      * @param nanosecondsPassed nanoseconds passed since last update*/

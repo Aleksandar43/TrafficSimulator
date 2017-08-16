@@ -24,7 +24,8 @@ public class Main extends Application{
     private Translate translateMainCamera,translateJunctionCamera;
     private Rotate xRotateMainCamera,zRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
     private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=150,
-            xRotateStartingAngle=225,xRotateMinAngle=180,xRotateMaxAngle=270;
+            xRotateStartingAngle=225,xRotateMinAngle=180,xRotateMaxAngle=270,
+            mainCameraDownLimit=-1000, mainCameraUpLimit=-10000;
     
     private class TrafficTimer extends AnimationTimer{
         private long previous=0;
@@ -172,10 +173,12 @@ public class Main extends Application{
     private void keyPressingMainCamera(KeyEvent e){
         switch(e.getCode()){
             case UP:
-                translateMainCamera.setZ(translateMainCamera.getZ()+10);
+                translateMainCamera.setZ(translateMainCamera.getZ()*Math.pow(10, 0.1));
+                if(translateMainCamera.getZ()<mainCameraUpLimit) translateMainCamera.setZ(mainCameraUpLimit);
                 break;
             case DOWN:
-                translateMainCamera.setZ(translateMainCamera.getZ()-10);
+                translateMainCamera.setZ(translateMainCamera.getZ()/Math.pow(10, 0.1));
+                if(translateMainCamera.getZ()>mainCameraDownLimit) translateMainCamera.setZ(mainCameraDownLimit);
                 break;
         }
     }
