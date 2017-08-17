@@ -9,7 +9,6 @@ import javafx.scene.shape.Box;
 public class Truck extends Vehicle{
     private Box frontBox, rearBox;
     private PhongMaterial frontBoxMaterial, rearBoxMaterial;
-    private StopBox stopBox;
     public Truck(){
         super.initVehicle(10, 3, 3, 0, -100, 0);
         frontBox=new Box(100,150,100);

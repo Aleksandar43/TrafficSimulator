@@ -1,8 +1,14 @@
 package computergraphics.homework2;
 
 import computergraphics.homework2.shapes.Pyramid;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Point3D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -21,6 +27,7 @@ public class Main extends Application{
     private Scene scene;
     private Junction junction;
     private PerspectiveCamera previewCamera,mainCamera,junctionCamera;
+    private Group mainGroup;
     private Translate translateMainCamera,translateJunctionCamera;
     private Rotate xRotateMainCamera,zRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
     private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=150,
@@ -32,8 +39,21 @@ public class Main extends Application{
         @Override
         public void handle(long now) {
             if(previous==0) previous=now;
-            truck.updatePosition(now-previous);
-            truck2.updatePosition(now-previous);
+            List<Vehicle> allVehicles = Vehicle.getAllVehicles();
+            Iterator<Vehicle> listIterator = allVehicles.listIterator();
+            while(listIterator.hasNext()){
+                Vehicle v = listIterator.next();
+                if(Math.abs(v.getEnvironmentTranslate().getX())>10000 || Math.abs(v.getEnvironmentTranslate().getY())>10000){
+                    v.remove();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainGroup.getChildren().remove(v);
+                        }
+                    });
+                }
+                else v.updatePosition(now-previous);
+            }
             translateDummy.setX(translateDummy.getX()+dummySpeed);
             StopBox[] stopBoxes = junction.getLocalStopBoxes();
             boolean intersecting=false; 
@@ -55,6 +75,33 @@ public class Main extends Application{
     
     private TrafficTimer trafficTimer=new TrafficTimer();
     
+    private class VehicleSpawner implements Runnable{
+        private Point3D position;
+        public VehicleSpawner(double x, double y, double z){
+            position=new Point3D(x, y, z);
+        }
+        @Override
+        public void run() {
+            while (!Thread.interrupted()) {                
+                try {
+                    Truck t = new Truck();
+                    t.moveToPoint(position.getX(), position.getY(), position.getZ());
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainGroup.getChildren().add(t);
+                        }
+                    });
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    System.out.println("Thread Vehicle spawner interrupted");
+                }
+            }
+        }
+    }
+    
+    private VehicleSpawner spawner;
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
         int FIELD_LENGTH=1000;
@@ -69,7 +116,7 @@ public class Main extends Application{
         PhongMaterial pyramidMaterial=new PhongMaterial(Color.YELLOW);
         pyramid.setMaterial(pyramidMaterial);
         pyramid.setTranslateX(100);
-        Group mainGroup=new Group();
+        mainGroup = new Group();
 //        mainGroup.getChildren().add(field);
         mainGroup.getChildren().add(grass);
         mainGroup.getChildren().add(pyramid);
@@ -126,6 +173,10 @@ public class Main extends Application{
         truck2.moveToPoint(-6000, -75, 0);
         truck2.rotate(90);
         mainGroup.getChildren().add(truck2);
+        spawner=new VehicleSpawner(-6000, -100, 0);
+        Thread spawnerThread=new Thread(spawner, "Spawner");
+        spawnerThread.setDaemon(true);
+        spawnerThread.start();
         scene = new Scene(mainGroup, 640, 480, true);
         scene.setCamera(mainCamera);
         scene.setOnKeyPressed(e->keyPressing(e));

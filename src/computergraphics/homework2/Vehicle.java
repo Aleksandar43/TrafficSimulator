@@ -2,6 +2,8 @@
 package computergraphics.homework2;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -21,8 +23,9 @@ public abstract class Vehicle extends Group{
     protected Rotate cameraAngleX,cameraAngleZ,environmentRotate;
     //in meters/second and meters/second^2
     protected double maxSpeed, acceleratingRate, brakingRate, currentSpeed;
-    protected static ArrayList<Vehicle> allVehicles=new ArrayList<>();
+    protected static CopyOnWriteArrayList<Vehicle> allVehicles=new CopyOnWriteArrayList<>();
     protected static double vehicleCameraUpLimit=-180, vehicleCameraDownLimit=-95;
+    protected StopBox stopBox;
     
     protected void initVehicle(double maxSpeed, double acceleratingRate, double brakingRate, double x, double y, double z) {
         checkingPoint=new Point3D(x, y, z);
@@ -82,7 +85,7 @@ public abstract class Vehicle extends Group{
         double seconds=nanosecondsPassed/1e9;
         //1 unit represents 1cm
         environmentTranslate.setX(environmentTranslate.getX()+currentSpeed*100*seconds);
-        ArrayList<StopBox> stopBoxes = StopBox.getStopBoxes();
+        List<StopBox> stopBoxes = StopBox.getStopBoxes();
         boolean intersecting=false; 
         for (StopBox sb : stopBoxes) {
             if(sb.isActive() && sb.getBoundsInScene().contains(localToScene(checkingPoint))){
@@ -99,7 +102,12 @@ public abstract class Vehicle extends Group{
         }
     }
     
-    public static ArrayList getAllVehicles(){
+    public void remove(){
+        StopBox.getStopBoxes().remove(stopBox);
+        allVehicles.remove(this);
+    }
+    
+    public static List<Vehicle> getAllVehicles(){
         return allVehicles;
     }
 }

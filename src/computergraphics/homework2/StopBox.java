@@ -2,6 +2,8 @@
 package computergraphics.homework2;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -18,7 +20,7 @@ public class StopBox extends Box{
     private static PhongMaterial activeMaterial=new PhongMaterial(Color.RED);
     private static PhongMaterial inactiveMaterial=new PhongMaterial(Color.GRAY);
     /**List of all stopBoxes in the application*/
-    private static ArrayList<StopBox> stopBoxes=new ArrayList<>();
+    private static CopyOnWriteArrayList<StopBox> stopBoxes=new CopyOnWriteArrayList<>();
     private static boolean visible=true;
     
     /**
@@ -42,6 +44,7 @@ public class StopBox extends Box{
         super(width, height, depth);
         setMaterial(activeMaterial);
         setDrawMode(DrawMode.LINE);
+        setVisible(visible);
     }
     
     private StopBox(){
@@ -62,7 +65,7 @@ public class StopBox extends Box{
         else setMaterial(inactiveMaterial);
     }
 
-    public static ArrayList<StopBox> getStopBoxes() {
+    public static List<StopBox> getStopBoxes() {
         return stopBoxes;
     }
     
