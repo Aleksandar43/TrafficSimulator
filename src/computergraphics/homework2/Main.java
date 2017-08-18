@@ -33,6 +33,7 @@ public class Main extends Application{
     private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=150,
             xRotateStartingAngle=225,xRotateMinAngle=180,xRotateMaxAngle=270,
             mainCameraDownLimit=-1000, mainCameraUpLimit=-10000;
+    private static final double DISTANCE_AWAY=-6000, DISTANCE_SIDE=-100;
     
     private class TrafficTimer extends AnimationTimer{
         private long previous=0;
@@ -77,8 +78,14 @@ public class Main extends Application{
     
     private class VehicleSpawner implements Runnable{
         private Point3D position;
+        private double angle;
         public VehicleSpawner(double x, double y, double z){
             position=new Point3D(x, y, z);
+        }
+
+        public VehicleSpawner(double x, double y, double z, double angle) {
+            position=new Point3D(x, y, z);
+            this.angle = angle;
         }
         @Override
         public void run() {
@@ -86,6 +93,7 @@ public class Main extends Application{
                 try {
                     Truck t = new Truck();
                     t.moveToPoint(position.getX(), position.getY(), position.getZ());
+                    t.rotate(angle);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -100,7 +108,9 @@ public class Main extends Application{
         }
     }
     
-    private VehicleSpawner spawner;
+    private VehicleSpawner spawner,spawner2;
+    private VehicleSpawner[] spawners;
+    private Thread[] spawnerThreads;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -173,10 +183,22 @@ public class Main extends Application{
         truck2.moveToPoint(-6000, -75, 0);
         truck2.rotate(90);
         mainGroup.getChildren().add(truck2);
-        spawner=new VehicleSpawner(-6000, -100, 0);
-        Thread spawnerThread=new Thread(spawner, "Spawner");
-        spawnerThread.setDaemon(true);
-        spawnerThread.start();
+//        spawner=new VehicleSpawner(-6000, -100, 0);
+//        Thread spawnerThread=new Thread(spawner, "Spawner");
+//        spawnerThread.setDaemon(true);
+//        spawnerThread.start();
+//        spawner2=new VehicleSpawner(-6000, -100, 0, 90);
+//        Thread spawnerThread2=new Thread(spawner2, "Spawner2");
+//        spawnerThread2.setDaemon(true);
+//        spawnerThread2.start();
+        spawners=new VehicleSpawner[4];
+        spawnerThreads=new Thread[4];
+        for(int i=0;i<spawners.length;i++){
+            spawners[i]=new VehicleSpawner(DISTANCE_AWAY, DISTANCE_SIDE, 0, i*90);
+            spawnerThreads[i]=new Thread(spawners[i], "Spawner-"+i);
+            spawnerThreads[i].setDaemon(true);
+            spawnerThreads[i].start();
+        }
         scene = new Scene(mainGroup, 640, 480, true);
         scene.setCamera(mainCamera);
         scene.setOnKeyPressed(e->keyPressing(e));
