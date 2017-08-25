@@ -1,14 +1,13 @@
 package computergraphics.homework2;
 
 import computergraphics.homework2.shapes.Pyramid;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Point3D;
+import javafx.scene.AmbientLight;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -18,7 +17,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
@@ -114,7 +112,7 @@ public class Main extends Application{
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        int FIELD_LENGTH=1000;
+        int FIELD_LENGTH=10000;
 //        Rectangle field=new Rectangle(FIELD_LENGTH, FIELD_LENGTH, Color.GREEN);
 //        field.setTranslateX(-FIELD_LENGTH/2);
 //        field.setTranslateY(-FIELD_LENGTH/2);
@@ -132,16 +130,28 @@ public class Main extends Application{
         mainGroup.getChildren().add(pyramid);
         junction = new Junction(7000, 8000);
         mainGroup.getChildren().add(junction);
-        for(int i=0;i<5;i++){
+        for(int i=0;i<10;i++){
             Road r=new Road();
             r.setTranslateY(i*500+500);
             mainGroup.getChildren().add(r);
         }
-        for(int i=0;i<5;i++){
+        for(int i=0;i<10;i++){
             Road r=new Road();
             r.setRotationAxis(Rotate.Z_AXIS);
             r.setRotate(90);
             r.setTranslateX(i*500+500);
+            mainGroup.getChildren().add(r);
+        }
+        for(int i=0;i<10;i++){
+            Road r=new Road();
+            r.setTranslateY(-(i*500+500));
+            mainGroup.getChildren().add(r);
+        }
+        for(int i=0;i<10;i++){
+            Road r=new Road();
+            r.setRotationAxis(Rotate.Z_AXIS);
+            r.setRotate(-90);
+            r.setTranslateX(-(i*500+500));
             mainGroup.getChildren().add(r);
         }
         previewCamera=new PerspectiveCamera(true);
@@ -164,9 +174,6 @@ public class Main extends Application{
         yRotateJunctionCamera=new Rotate(0, xPivotJunctionCamera, yPivotJunctionCamera, zPivotJunctionCamera, Rotate.Y_AXIS);
         zRotateJunctionCamera=new Rotate(0, xPivotJunctionCamera, yPivotJunctionCamera, zPivotJunctionCamera, Rotate.Z_AXIS);
         junctionCamera.getTransforms().addAll(translateJunctionCamera, zRotateJunctionCamera, yRotateJunctionCamera, xRotateJunctionCamera);
-        PointLight pointLight=new PointLight();
-        pointLight.setTranslateX(75);
-        //mainGroup.getChildren().add(pointLight);
         //dummy vehicle box
         dummy = new Box(350, 150, 150);
         PhongMaterial materialDummy=new PhongMaterial(Color.BROWN);
@@ -199,7 +206,10 @@ public class Main extends Application{
             spawnerThreads[i].setDaemon(true);
             spawnerThreads[i].start();
         }
+        AmbientLight ambientLight=new AmbientLight(Color.WHITE);
+        mainGroup.getChildren().add(ambientLight);
         scene = new Scene(mainGroup, 640, 480, true);
+        scene.setFill(Color.SKYBLUE);
         scene.setCamera(mainCamera);
         scene.setOnKeyPressed(e->keyPressing(e));
         primaryStage.setScene(scene);

@@ -21,7 +21,7 @@ public class StopBox extends Box{
     private static PhongMaterial inactiveMaterial=new PhongMaterial(Color.GRAY);
     /**List of all stopBoxes in the application*/
     private static CopyOnWriteArrayList<StopBox> stopBoxes=new CopyOnWriteArrayList<>();
-    private static boolean visible=true;
+    private static boolean visible=false;
     
     /**
      * Creates new StopBox object and adds it to the list of all stop boxes 
