@@ -39,7 +39,7 @@ public abstract class Vehicle extends Group{
         this.maxSpeed=maxSpeed;
         this.acceleratingRate=acceleratingRate;
         this.brakingRate=brakingRate;
-        currentSpeed=maxSpeed;
+        currentSpeed=0;
         environmentTranslate=new Translate();
         environmentRotate=new Rotate(0, Rotate.Z_AXIS);
         getTransforms().addAll(environmentRotate,environmentTranslate);

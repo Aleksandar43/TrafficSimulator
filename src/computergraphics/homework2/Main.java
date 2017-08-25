@@ -6,12 +6,11 @@ import java.util.List;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Point3D;
 import javafx.scene.AmbientLight;
 import javafx.scene.Camera;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
-import javafx.scene.PointLight;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -25,7 +24,7 @@ public class Main extends Application{
     private Scene scene;
     private Junction junction;
     private PerspectiveCamera previewCamera,mainCamera,junctionCamera;
-    private Group mainGroup;
+    private static Group mainGroup;
     private Translate translateMainCamera,translateJunctionCamera;
     private Rotate xRotateMainCamera,zRotateMainCamera,xRotateJunctionCamera,yRotateJunctionCamera,zRotateJunctionCamera;
     private static double xPivotJunctionCamera=0,yPivotJunctionCamera=0,zPivotJunctionCamera=150,
@@ -74,36 +73,20 @@ public class Main extends Application{
     
     private TrafficTimer trafficTimer=new TrafficTimer();
     
-    private class VehicleSpawner implements Runnable{
-        private Point3D position;
-        private double angle;
-        public VehicleSpawner(double x, double y, double z){
-            position=new Point3D(x, y, z);
-        }
-
-        public VehicleSpawner(double x, double y, double z, double angle) {
-            position=new Point3D(x, y, z);
-            this.angle = angle;
-        }
-        @Override
-        public void run() {
-            while (!Thread.interrupted()) {                
-                try {
-                    Truck t = new Truck();
-                    t.moveToPoint(position.getX(), position.getY(), position.getZ());
-                    t.rotate(angle);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            mainGroup.getChildren().add(t);
-                        }
-                    });
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    System.out.println("Thread Vehicle spawner interrupted");
-                }
-            }
-        }
+    /**
+     * A method to add nodes to the main group because it has private access.
+     * @param node Node to be added
+     */
+    public static void addToMainGroup(Node node){
+        mainGroup.getChildren().add(node);
+    }
+    
+    /**
+     * A method to remove nodes from the main group because it has private access.
+     * @param node Node to be added
+     */
+    public static void removeFromMainGroup(Node node){
+        mainGroup.getChildren().remove(node);
     }
     
     private VehicleSpawner spawner,spawner2;
@@ -166,7 +149,8 @@ public class Main extends Application{
         Rotate rot1=new Rotate(-135, Rotate.X_AXIS);
         Rotate rot2=new Rotate(0, Rotate.Y_AXIS);
         Translate t1=new Translate(0, 0, -2000);
-        previewCamera.getTransforms().addAll(rot1,rot2,t1);
+        Translate toCheck=new Translate(6000, 0, 0);
+        previewCamera.getTransforms().addAll(rot1,rot2,t1,toCheck);
         junctionCamera=new PerspectiveCamera(true);
         junctionCamera.setFarClip(10000);
         translateJunctionCamera=new Translate(0, 0, 50);
